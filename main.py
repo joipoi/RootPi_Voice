@@ -14,7 +14,8 @@ VAD_AGGRESSIVENESS = 3  # strict
 SILENCE_DURATION_MS = 1000
 PREBUFFER_DURATION_MS = 500  # store last milliseconds of audio before speech
 VALIDATION_FRAMES = 15         # require this many consecutive voiced frames to start recording
-# The amount of ms needed to trigger as voice =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
+
+# The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 
 OUTPUT_DIR = "recordings"
 
