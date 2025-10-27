@@ -3,49 +3,62 @@ import os
 import time
 from datetime import datetime
 import webrtcvad
+from collections import deque
 
-from recording import Recorder
+from recording import Recorder, Frame
 
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000
-FRAME_DURATION_MS = 30       # frame must be either 10, 20, or 30 ms
-VAD_AGGRESSIVENESS = 3       # 0=least strict, 3=most strict
-SILENCE_DURATION_MS = 1000   # Stop recording after ~1 sec of silence
+FRAME_DURATION_MS = 30
+VAD_AGGRESSIVENESS = 3  # strict
+SILENCE_DURATION_MS = 1000
+PREBUFFER_DURATION_MS = 500  # store last milliseconds of audio before speech
+VALIDATION_FRAMES = 15         # require this many consecutive voiced frames to start recording
+# The amount of ms needed to trigger as voice =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
+
 OUTPUT_DIR = "recordings"
 
-# Ensure output folder exists
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 def main():
-    # Initialize VAD
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
-
-    # Initialize Recorder
     recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
     recorder.start_stream()
     print("Listening for speech... Press Ctrl+C to stop.")
 
-    # State machine
     STATE_IDLE = 0
     STATE_RECORDING = 1
     state = STATE_IDLE
 
     silence_frames = int(SILENCE_DURATION_MS / FRAME_DURATION_MS)
+    prebuffer_frames = int(PREBUFFER_DURATION_MS / FRAME_DURATION_MS)
 
     consecutive_silence = 0
+    consecutive_voiced = 0
+    prebuffer = deque(maxlen=prebuffer_frames)
 
     try:
         for frame in recorder.frames():
             is_speech = vad.is_speech(frame.bytes, SAMPLE_RATE)
+            prebuffer.append(frame)
 
             if state == STATE_IDLE:
                 if is_speech:
-                    # Start recording
-                    state = STATE_RECORDING
-                    recorder.start_recording()
-                    recorder.buffer_frame(frame)
-                    consecutive_silence = 0
-                    print(f"Speech detected! Recording started at {datetime.now().strftime('%H:%M:%S')}")
+                    consecutive_voiced += 1
+                    if consecutive_voiced >= VALIDATION_FRAMES:
+                        # Start recording
+                        state = STATE_RECORDING
+                        recorder.start_recording()
+                        # Add prebuffer to recording
+                        for f in prebuffer:
+                            recorder.buffer_frame(f)
+                        prebuffer.clear()
+                        consecutive_silence = 0
+                        print(f"Speech detected! Recording started at {datetime.now().strftime('%H:%M:%S')}")
+                        recorder.buffer_frame(frame)  # current frame
+                        consecutive_voiced = 0
+                else:
+                    consecutive_voiced = 0
 
             elif state == STATE_RECORDING:
                 recorder.buffer_frame(frame)
@@ -60,6 +73,7 @@ def main():
                         recorder.save_recording(filename)
                         state = STATE_IDLE
                         consecutive_silence = 0
+                        consecutive_voiced = 0
                         print("Waiting for next speech segment...")
 
     except KeyboardInterrupt:
