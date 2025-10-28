@@ -27,6 +27,8 @@ Currently the program is good at telling the difference between silence and soun
 I want to try some different soultion using another tool, maybe something AI related.
 
 # Audio file conversion
+(This is only relevent for debugging, not for our main program)
+
 When creating or downloading wav files they might not be encoded right. We can fix this by using [ffmpeg](https://www.ffmpeg.org/). I already had ffmpeg installed by maybe you need to install it.
 
 To encode one file with ffmpeg you can use this command
