@@ -8,13 +8,12 @@ from collections import deque
 from recording import Recorder, Frame
 
 # --- PARAMETERS ---
-SAMPLE_RATE = 16000
-FRAME_DURATION_MS = 30
-VAD_AGGRESSIVENESS = 3  # strict
-SILENCE_DURATION_MS = 1000
+SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
+FRAME_DURATION_MS = 30 # can only be 10/20/30
+VAD_AGGRESSIVENESS = 3  # can only be 0/1/2/3
+SILENCE_DURATION_MS = 1000 # how many ms of silence until we stop recording
 PREBUFFER_DURATION_MS = 500  # store last milliseconds of audio before speech
-VALIDATION_FRAMES = 15         # require this many consecutive voiced frames to start recording
-
+VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start recording
 # The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 
 OUTPUT_DIR = "recordings"

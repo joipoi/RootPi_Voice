@@ -1,6 +1,5 @@
 __pycache__/
 recordings
 temp_testing
-test_debug/audio_files
 test_debug/debug_logs
 test_debug/recording_chunks
