@@ -3,11 +3,19 @@ Currently this project starts listening for audio and when it recognizes a voice
 # Setup
 Currently I have not tested setting up on another computer so this might be wrong. I should maybe use conda or something similar.
 
-I think the only thing you need is webrtcvad which you get like this
+Right now you need webrtcvad and openai whisper
 ```
 pip install webrtcvad
+pip install -U openai-whisper
 ```
-When I did this I got some error about Visual Studio and C++. To solve this I had to go to this [link](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the "Visual Studio Build Tools for C++". Then I had to go to Visual Studio installer and install "Desktop development with C++". Then I could install webrtcvad with no problem.
+When I installed webrtcvad I got some error about Visual Studio and C++. To solve this I had to go to this [link](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the "Visual Studio Build Tools for C++". Then I had to go to Visual Studio installer and install "Desktop development with C++". Then I could install webrtcvad with no problem.
+
+# Usage
+To run simply type
+```
+python main.py
+```
+then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
 # Adjusting Algorhytm
 To get the Voice activity detection to work better there are some variables you can adjust. Some of them can only have fixed values decided by webrtcvad and others are made by me
 
@@ -21,10 +29,13 @@ PREBUFFER_DURATION_MS = 500  # store last milliseconds of audio before speech
 VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start recording
 # The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 ```
+
 # Problems
 Currently the program is good at telling the difference between silence and sound. It is also good at knowing when the sound stops and to stop the recording. However it can not tell the difference between voice and for example keyboard clicking. We can get it to ignore some background sound but if it is loud enough it will start the recording which seems bad. 
 
 I want to try some different soultion using another tool, maybe something AI related.
+# Transcribing
+Right now we are using openai whisper, the code for that is in transcriber.py. It is set to use the base model, run locally and use swedish(sv)
 
 # Audio file conversion
 (This is only relevent for debugging, not for our main program)

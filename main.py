@@ -7,6 +7,8 @@ from collections import deque
 
 from recording import Recorder, Frame
 
+from transcriber import transcribe_audio
+
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
 FRAME_DURATION_MS = 30 # can only be 10/20/30
@@ -49,6 +51,7 @@ def main():
                         # Start recording
                         state = STATE_RECORDING
                         recorder.start_recording()
+                        start_time = time.time()  # Start timer
                         # Add prebuffer to recording
                         for f in prebuffer:
                             recorder.buffer_frame(f)
@@ -71,9 +74,14 @@ def main():
                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                         filename = os.path.join(OUTPUT_DIR, f"recording_{timestamp}.wav")
                         recorder.save_recording(filename)
+                        print(filename)
+                        transcribe_audio(filename)
+                        end_time = time.time()  # End timer
+                        elapsed = end_time - start_time
                         state = STATE_IDLE
                         consecutive_silence = 0
                         consecutive_voiced = 0
+                        print(f"\n⏱️ Full time: {elapsed:.2f} seconds")
                         print("Waiting for next speech segment...")
 
     except KeyboardInterrupt:
