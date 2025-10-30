@@ -1,4 +1,7 @@
-# test_debug/test_vad_stream.py
+# To run this:
+# python -m test_debug.voice_detection.live_test
+
+import sys
 import os
 import time
 from datetime import datetime
@@ -7,7 +10,7 @@ import webrtcvad
 import numpy as np
 import csv
 
-from recording import Recorder, Frame
+from recording import Recorder
 
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000
@@ -18,8 +21,8 @@ VALIDATION_FRAMES = 5
 SILENCE_DURATION_MS = 1000
 DEBUG = True
 
-OUTPUT_DIR = "recordings"
-LOG_DIR = "test_debug/debug_logs"
+OUTPUT_DIR = "test_debug/voice_detection/recordings"
+LOG_DIR = "test_debug/voice_detection/debug_logs"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 os.makedirs(LOG_DIR, exist_ok=True)
 

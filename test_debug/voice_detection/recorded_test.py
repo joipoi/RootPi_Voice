@@ -5,7 +5,10 @@ import wave
 
 import webrtcvad
 
-
+# This code was taken from the webrtcvad github as example.py
+# It takes an audio file and returns an audio file for each voice segment
+# To use: 
+# python test_debug\voice_detection\recorded_test.py <filename>  (it looks for the file in the audio_files folder)
 def read_wave(path):
     """Reads a .wav file.
 
@@ -138,13 +141,9 @@ def vad_collector(sample_rate, frame_duration_ms,
         yield b''.join([f.bytes for f in voiced_frames])
 
 
-def main(args):
-    if len(args) != 1:
-        sys.stderr.write(
-            'Usage: test_debug/test_vad_stream.py <name of wav file>\n')
-        sys.exit(1)
+def main(file):
     VAD_AGGRESSIVENESS = 3 
-    audio, sample_rate = read_wave("test_debug/audio_files/"+ args[0])
+    audio, sample_rate = read_wave("test_debug/audio_files/"+ file)
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
     frames = frame_generator(30, audio, sample_rate)
     frames = list(frames)
@@ -153,10 +152,10 @@ def main(args):
         print("No voice segments found in audio")
     else:
         for i, segment in enumerate(segments):
-            path = f'test_debug/recording_chunks/chunk-{i:02d}.wav'
+            path = f'test_debug/voice_detection/recording_chunks/chunk-{i:02d}.wav'
             print(f'Writing {path}')
             write_wave(path, segment, sample_rate)
 
 
 if __name__ == '__main__':
-    main(sys.argv[1:])
+    main("joel_voice.wav")

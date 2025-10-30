@@ -37,6 +37,8 @@ I want to try some different soultion using another tool, maybe something AI rel
 # Transcribing
 Right now we are using openai whisper, the code for that is in transcriber.py. It is set to use the base model, run locally and use swedish(sv)
 
+# Debug
+All debug code should be acceesed via debug_run.py
 # Audio file conversion
 (This is only relevent for debugging, not for our main program)
 

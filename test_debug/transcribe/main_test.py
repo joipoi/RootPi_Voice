@@ -1,17 +1,21 @@
+# To run this
+# python test_debug/transcribe/main_test.py
+
 import whisper
 import time
 
 LANGUAGE = "sv" # swedish = sv, english = en
 MODEL = "base" # tiny/base/small/medium/large/turbo
+AUDIO_FILES_DIR = "test_debug/audio_files/"
 
-def transcribe_audio(filename="test.wav"):
+def transcribe_audio(filename="joel_voice.wav"):
     print("🧠 Loading Whisper model...")
     model = whisper.load_model(MODEL) 
 
     print(f"🎧 Transcribing '{filename}'...")
     start_time = time.time()  # Start timer
 
-    result = model.transcribe(filename, language=LANGUAGE)
+    result = model.transcribe(AUDIO_FILES_DIR + filename, language=LANGUAGE)
 
     end_time = time.time()  # End timer
     elapsed = end_time - start_time
