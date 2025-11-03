@@ -1,12 +1,12 @@
 # Description
 Currently this project starts listening for audio and when it recognizes a voice it starts recording and when the voice stops it stops recording. It then saves each recording in its own wav file. To recognize the voice it uses [webrtcvad](https://github.com/wiseman/py-webrtcvad). For recording it uses sounddevice
 # Setup
-Currently I have not tested setting up on another computer so this might be wrong. I should maybe use conda or something similar.
+Setup a python envrioment and install dependencies from requirements.txt with these commands
 
-Right now you need webrtcvad and openai whisper
 ```
-pip install webrtcvad
-pip install -U openai-whisper
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
 ```
 When I installed webrtcvad I got some error about Visual Studio and C++. To solve this I had to go to this [link](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the "Visual Studio Build Tools for C++". Then I had to go to Visual Studio installer and install "Desktop development with C++". Then I could install webrtcvad with no problem.
 
@@ -16,6 +16,13 @@ To run simply type
 python main.py
 ```
 then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
+
+for debugging run
+
+```
+python debug_run.py
+```
+
 # Adjusting Algorhytm
 To get the Voice activity detection to work better there are some variables you can adjust. Some of them can only have fixed values decided by webrtcvad and others are made by me
 

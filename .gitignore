@@ -1,5 +1,5 @@
 __pycache__/
 recordings
-test_debug/debug_logs
 test_debug/recording_chunks
 test_debug/voice_detection/debug_logs
+.venv
