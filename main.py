@@ -9,6 +9,8 @@ from recording import Recorder, Frame
 
 from transcriber import transcribe_audio
 
+from tool_calling.main import query_ai
+
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
 FRAME_DURATION_MS = 30 # can only be 10/20/30
@@ -74,8 +76,10 @@ def main():
                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                         filename = os.path.join(OUTPUT_DIR, f"recording_{timestamp}.wav")
                         recorder.save_recording(filename)
-                        print(filename)
-                        transcribe_audio(filename)
+
+                        transcribed_text = transcribe_audio(filename)
+                        query_ai(transcribed_text)
+
                         end_time = time.time()  # End timer
                         elapsed = end_time - start_time
                         state = STATE_IDLE

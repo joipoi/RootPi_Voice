@@ -2,7 +2,7 @@ import whisper
 import time
 
 LANGUAGE = "sv" # swedish = sv, english = en
-MODEL = "base" # tiny/base/small/medium/large/turbo
+MODEL = "small" # tiny/base/small/medium/large/turbo
 
 def transcribe_audio(filename="test.wav"):
     print("🧠 Loading Whisper model...")
