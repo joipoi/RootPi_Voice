@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>WebSocket Test</h2>
+    <button id="myButton">Record</button>
+    <script>
+      const ws = new WebSocket("ws://localhost:8000/ws");
+      const myButton = document.getElementById("myButton");
+      myButton.addEventListener("click", () => {
+        start_recording();
+      });
+
+        ws.onopen = () => {
+        console.log("Connected to server");
+        ws.send("Hello from frontend!");
+      };
+
+           ws.onclose = () => {
+        console.log("Disconnected from server");
+      };
+
+ws.onmessage = (event) => {
+  const msg = JSON.parse(event.data);
+  console.log(JSON.stringify(msg))
+  console.log("Got a message: " + msg.data.name + " with args " + JSON.stringify(msg.data.args))
+
+  if (msg.type === "runFunction") {
+    const fn = msg.data?.name;
+    console.log("Server says to run:", fn);
+
+    // Call the function dynamically if it exists
+    if (typeof window[fn] === "function") {
+      window[fn](msg.data.args);
+    } else {
+      console.warn("No such function:", fn);
+    }
+  }
+};
+
+// Example frontend function to be called
+function write_question(question) {
+  alert("Användaren frågar: " + question);
+}
+function start_recording(){
+  ws.send("start_recording")
+}
+
+    </script>
+  </body>
+</html>

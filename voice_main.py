@@ -5,6 +5,8 @@ from datetime import datetime
 import webrtcvad
 from collections import deque
 
+import time
+
 from recording import Recorder, Frame
 
 from transcriber import transcribe_audio
@@ -12,6 +14,8 @@ from transcriber import transcribe_audio
 from transcriber_api import transcribe_audio_api
 
 from tool_calling.main import query_ai
+
+
 
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
@@ -26,7 +30,8 @@ OUTPUT_DIR = "recordings"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def main():
+def start_recording_loop():
+   
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
     recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
     recorder.start_stream()
@@ -95,5 +100,6 @@ def main():
     finally:
         recorder.stop_stream()
 
+
 if __name__ == "__main__":
-    main()
+    start_recording_loop()

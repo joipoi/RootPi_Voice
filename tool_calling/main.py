@@ -4,7 +4,9 @@ import json
 from dotenv import load_dotenv
 from pathlib import Path
 
-from tools import get_tools
+from tool_calling.ai_tools import get_tools
+
+from event_loop_runner import run_async, send_event
 
 project_root = Path(__file__).parent.parent
 dotenv_path = project_root / '.env'
@@ -16,14 +18,14 @@ client = OpenAI(api_key= os.getenv("OPENAI_API_KEY"))
 
 
 
-def write_question(question):
-    print(f"")
+async def write_question(question):
+    await send_event("runFunction", {"name": "write_question", "args": question})
 
 def post_question():
-    print(f"")
+    print(f"post question")
 
 def change_backend(backend):
-    print(f"")
+    print(f"change backend")
 
 
 
@@ -43,11 +45,14 @@ def query_ai(prompt):
 
     for item in response.output:
         if item.type == "function_call":
-            print("AI is using function: " + item.name + " with arguments " + item.arguments)
-            if item.name == "click_button":
-                args = json.loads(item.arguments)
-                click_button(args["button_color"])
+            print("AI is using function:", item.name, "with arguments", item.arguments)
 
+            args = json.loads(item.arguments)
+            print("args:", args)  # safe printing
+
+            if item.name == "write_question":
+                question_text = args.get("question")
+                run_async(write_question(question_text))
 
    # print("Tool Calling response:")
    # print(response.model_dump_json(indent=2))
@@ -61,3 +66,5 @@ def query_ai(prompt):
 #print("Response for user:")
 #print(response.model_dump_json(indent=2))
 #print("\n" + response.output_text)
+ 
+

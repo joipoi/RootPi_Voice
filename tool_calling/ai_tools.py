@@ -16,13 +16,13 @@ def get_tools():
                 },
                 "required": ["question"],
             },
-        },
+        }
     
     post_tool =  {
             "type": "function",
             "name": "post_question",
             "description": "Trycker på en knapp som skickar en fråga från användaren till en ai chatbot"
-        },
+        }
     
     change_backend_tool =  {
             "type": "function",
@@ -38,7 +38,7 @@ def get_tools():
                 },
                 "required": ["backend"],
             },
-        },
+        }
 
     tools = [question_tool, post_tool, change_backend_tool]
     return tools

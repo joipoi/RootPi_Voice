@@ -11,11 +11,17 @@ pip install -r requirements.txt
 When I installed webrtcvad I got some error about Visual Studio and C++. To solve this I had to go to this [link](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the "Visual Studio Build Tools for C++". Then I had to go to Visual Studio installer and install "Desktop development with C++". Then I could install webrtcvad with no problem.
 
 # Usage
-To run simply type
+To run just the recording loop type
 ```
-python main.py
+python voice_main.py
 ```
 then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
+
+if you want to start the api which lets the frontend start the recording loop later type
+
+```
+python init.py
+```
 
 for debugging run
 
