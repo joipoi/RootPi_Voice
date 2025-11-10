@@ -9,6 +9,8 @@ from recording import Recorder, Frame
 
 from transcriber import transcribe_audio
 
+from transcriber_api import transcribe_audio_api
+
 from tool_calling.main import query_ai
 
 # --- PARAMETERS ---

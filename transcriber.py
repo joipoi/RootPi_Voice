@@ -5,11 +5,12 @@ LANGUAGE = "sv" # swedish = sv, english = en
 MODEL = "small" # tiny/base/small/medium/large/turbo
 
 def transcribe_audio(filename="test.wav"):
+    start_time = time.time()  # Start timer
     print("🧠 Loading Whisper model...")
     model = whisper.load_model(MODEL) 
 
     print(f"🎧 Transcribing '{filename}'...")
-    start_time = time.time()  # Start timer
+  
 
     result = model.transcribe(filename, language=LANGUAGE)
 

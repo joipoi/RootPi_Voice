@@ -4,6 +4,8 @@ import json
 from dotenv import load_dotenv
 from pathlib import Path
 
+from tools import get_tools
+
 project_root = Path(__file__).parent.parent
 dotenv_path = project_root / '.env'
 load_dotenv(dotenv_path)
@@ -13,31 +15,24 @@ MODEL = "gpt-3.5-turbo"
 client = OpenAI(api_key= os.getenv("OPENAI_API_KEY"))
 
 
-# 1. Define a list of callable tools for the model
-tools = [
-      {
-        "type": "function",
-        "name": "click_button",
-        "description": "Clicks a button in a gui with a certain color",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "button_color": {
-                    "type": "string",
-                    "description": "a color in swedish or english",
-                },
-            },
-            "required": ["button_color"],
-        },
-    },
-]
-def click_button(button_color):
-    print(f"Du tryckte på den {button_color} knappen!")
+
+def write_question(question):
+    print(f"")
+
+def post_question():
+    print(f"")
+
+def change_backend(backend):
+    print(f"")
+
+
+
 
 # Create a running input list we will add to over time
 def query_ai(prompt):
     print("prompting ai with: " + prompt)
     input_list = [{"role": "user", "content": prompt}]
+    tools = get_tools()
 
     # 2. Prompt the model with tools defined
     response = client.responses.create(
@@ -48,6 +43,7 @@ def query_ai(prompt):
 
     for item in response.output:
         if item.type == "function_call":
+            print("AI is using function: " + item.name + " with arguments " + item.arguments)
             if item.name == "click_button":
                 args = json.loads(item.arguments)
                 click_button(args["button_color"])
