@@ -10,19 +10,24 @@
         start_recording();
       });
 
+      //event for when the connection starts
         ws.onopen = () => {
         console.log("Connected to server");
         ws.send("Hello from frontend!");
       };
 
-           ws.onclose = () => {
+       //event for when the connection ends
+        ws.onclose = () => {
         console.log("Disconnected from server");
       };
 
+//event for when backend sends a message
 ws.onmessage = (event) => {
   const msg = JSON.parse(event.data);
+  let functionName = msg.data.name;
+  let functionArgs = msg.data.args;
   console.log(JSON.stringify(msg))
-  console.log("Got a message: " + msg.data.name + " with args " + JSON.stringify(msg.data.args))
+  console.log("Got a message: " + functionName + " with args " + functionArgs)
 
   if (msg.type === "runFunction") {
     const fn = msg.data?.name;
@@ -41,6 +46,15 @@ ws.onmessage = (event) => {
 function write_question(question) {
   alert("Användaren frågar: " + question);
 }
+function send_question() {
+  alert("Användaren skickar frågan till AI");
+}
+function change_backend(backend) {
+  alert("Användaren ändrar backend till: " + backend);
+}
+
+
+//Sends a message to the backend to start recording
 function start_recording(){
   ws.send("start_recording")
 }

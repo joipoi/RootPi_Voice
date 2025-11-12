@@ -27,6 +27,7 @@ VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start re
 # The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 
 OUTPUT_DIR = "recordings"
+TRANSCRIBE_METHOD = "local" # local or API
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
@@ -84,7 +85,11 @@ def start_recording_loop():
                         filename = os.path.join(OUTPUT_DIR, f"recording_{timestamp}.wav")
                         recorder.save_recording(filename)
 
-                        transcribed_text = transcribe_audio(filename)
+                        if TRANSCRIBE_METHOD == "local":
+                            transcribed_text = transcribe_audio(filename)
+                        else:
+                            transcribed_text = transcribe_audio_api(filename)
+
                         query_ai(transcribed_text)
 
                         end_time = time.time()  # End timer
