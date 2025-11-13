@@ -5,9 +5,17 @@ from datetime import datetime
 import webrtcvad
 from collections import deque
 
+import time
+
 from recording import Recorder, Frame
 
 from transcriber import transcribe_audio
+
+from transcriber_api import transcribe_audio_api
+
+from tool_calling.main import query_ai
+
+
 
 # --- PARAMETERS ---
 SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
@@ -19,10 +27,12 @@ VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start re
 # The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 
 OUTPUT_DIR = "recordings"
+TRANSCRIBE_METHOD = "local" # local or API
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def main():
+def start_recording_loop():
+   
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
     recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
     recorder.start_stream()
@@ -74,8 +84,14 @@ def main():
                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                         filename = os.path.join(OUTPUT_DIR, f"recording_{timestamp}.wav")
                         recorder.save_recording(filename)
-                        print(filename)
-                        transcribe_audio(filename)
+
+                        if TRANSCRIBE_METHOD == "local":
+                            transcribed_text = transcribe_audio(filename)
+                        else:
+                            transcribed_text = transcribe_audio_api(filename)
+
+                        query_ai(transcribed_text)
+
                         end_time = time.time()  # End timer
                         elapsed = end_time - start_time
                         state = STATE_IDLE
@@ -89,5 +105,6 @@ def main():
     finally:
         recorder.stop_stream()
 
+
 if __name__ == "__main__":
-    main()
+    start_recording_loop()

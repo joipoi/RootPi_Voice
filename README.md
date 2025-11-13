@@ -1,5 +1,14 @@
 # Description
-Currently this project starts listening for audio and when it recognizes a voice it starts recording and when the voice stops it stops recording. It then saves each recording in its own wav file. To recognize the voice it uses [webrtcvad](https://github.com/wiseman/py-webrtcvad). For recording it uses sounddevice
+The flow of the program goes like this:
+
+- The program starts listening for audio(using sounddevice)
+- When it recognizes a voice it starts recording and when the voice stops it stops recording.(using [webrtcvad](https://github.com/wiseman/py-webrtcvad))
+- Each recording is saved as a wav file. 
+- The wav fle is converted to text with OpenAI Whisper.
+- The text is sent to an AI(openai) that uses tool/function calling to run some code based on the text
+
+The main program can be run from voice_main.py, however there is also an api with websockets that you can run via init., in that case the recording starts when a websocket event is recieved
+
 # Setup
 Setup a python envrioment and install dependencies from requirements.txt with these commands
 
@@ -10,49 +19,44 @@ pip install -r requirements.txt
 ```
 When I installed webrtcvad I got some error about Visual Studio and C++. To solve this I had to go to this [link](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and download the "Visual Studio Build Tools for C++". Then I had to go to Visual Studio installer and install "Desktop development with C++". Then I could install webrtcvad with no problem.
 
+You also need a .env file where you insert an OpenAI key, this is needed for tool calling and transcription if you are not running it locally
+
 # Usage
-To run simply type
+To run just the recording loop type
 ```
-python main.py
+python voice_main.py
 ```
 then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
 
-for debugging run
+if you want to start the api which lets the frontend start the recording loop later type
 
 ```
-python debug_run.py
+python init.py
 ```
 
-# Adjusting Algorhytm
-To get the Voice activity detection to work better there are some variables you can adjust. Some of them can only have fixed values decided by webrtcvad and others are made by me
-
-Feel free to change these and test if it gets better or worse
-```python
-SAMPLE_RATE = 16000 # can only be 8000/16000/32000/48000
-FRAME_DURATION_MS = 30 # can only be 10/20/30
-VAD_AGGRESSIVENESS = 3  # can only be 0/1/2/3
-SILENCE_DURATION_MS = 1000 # how many ms of silence until we stop recording
-PREBUFFER_DURATION_MS = 500  # store last milliseconds of audio before speech
-VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start recording
-# The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
-```
-
-# Problems
-Currently the program is good at telling the difference between silence and sound. It is also good at knowing when the sound stops and to stop the recording. However it can not tell the difference between voice and for example keyboard clicking. We can get it to ignore some background sound but if it is loud enough it will start the recording which seems bad. 
-
-I want to try some different soultion using another tool, maybe something AI related.
 # Transcribing
-Right now we are using openai whisper, the code for that is in transcriber.py. It is set to use the base model, run locally and use swedish(sv)
+For the transcribing we are using openai whisper. 
 
-# Debug
-All debug code should be acceesed via debug_run.py
-# Audio file conversion
-(This is only relevent for debugging, not for our main program)
+There is an option for running locally(transcriber.py) and one for running via API(transcriber_api.py)
 
-When creating or downloading wav files they might not be encoded right. We can fix this by using [ffmpeg](https://www.ffmpeg.org/). I already had ffmpeg installed by maybe you need to install it.
+You can set it to local or api with the variable "TRANSCRIBE_METHOD" in voice_main.py
 
-To encode one file with ffmpeg you can use this command
+# Tool Calling
+To know what function to call based on text we use tool calling or as OpenAI calls it [function calling](https://platform.openai.com/docs/guides/function-calling).
+
+The code for this is in the tool_calling folder. We define our tools in the file called "ai_tools.py" and then we query the ai with all the tools attached.
+
+# Websockets
+We want something to happen in a different application based on what the user said. So we need to send events from this program to another one. We used [Websockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API) for this.
+
+The tools we gave to the ai are the ones that send events to our other application. Here is an example of the event data we send:
 ```
-ffmpeg -i file.wav -ar 16000 -ac 1 -f wav encoded_file.wav
+("runFunction", {"name": "write_question", "args": question})
 ```
-I have made a powershell script that encodes all the audio files in the "audio_files" directory. Simply open powershell in the test_debug folder and type "./audio_convert.ps1"
+
+We also can start our recording based on an event we recieve from the other application. like this:
+```
+ data = await ws.receive_text()
+    if data == "start_recording":
+        threading.Thread(target=start_recording_loop, daemon=True).start()
+```
