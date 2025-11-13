@@ -22,18 +22,18 @@ When I installed webrtcvad I got some error about Visual Studio and C++. To solv
 You also need a .env file where you insert an OpenAI key, this is needed for tool calling and transcription if you are not running it locally
 
 # Usage
-To run just the recording loop type
-```
-python voice_main.py
-```
-then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
-
-if you want to start the api which lets the frontend start the recording loop later type
-
+To run with the api and websockets:
 ```
 python init.py
 ```
+Then the recording starts when we get an event from the frontend and we send events to the frontend based on what the user said
 
+
+to run without api just the main recording loop(does not work right now)
+```
+python init.py
+```
+then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
 # Transcribing
 For the transcribing we are using openai whisper. 
 
