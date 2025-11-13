@@ -31,7 +31,7 @@ Then the recording starts when we get an event from the frontend and we send eve
 
 to run without api just the main recording loop(does not work right now)
 ```
-python init.py
+python voice_main.py
 ```
 then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
 # Transcribing
