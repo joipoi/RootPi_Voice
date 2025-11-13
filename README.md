@@ -1,5 +1,5 @@
 # Description
-The flow of the program goes like this:
+The flow of the program goes like this(not counting api):
 
 - The program starts listening for audio(using sounddevice)
 - When it recognizes a voice it starts recording and when the voice stops it stops recording.(using [webrtcvad](https://github.com/wiseman/py-webrtcvad))
@@ -7,7 +7,7 @@ The flow of the program goes like this:
 - The wav fle is converted to text with OpenAI Whisper.
 - The text is sent to an AI(openai) that uses tool/function calling to run some code based on the text
 
-The main program can be run from voice_main.py, however there is also an api with websockets that you can run via init., in that case the recording starts when a websocket event is recieved
+The main program can be run from voice_main.py, however there is also an api with websockets that you can run via init.py, in that case the recording starts when a websocket event is recieved
 
 # Setup
 Setup a python envrioment and install dependencies from requirements.txt with these commands
