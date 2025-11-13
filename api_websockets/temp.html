@@ -35,7 +35,7 @@ ws.onmessage = (event) => {
 
     // Call the function dynamically if it exists
     if (typeof window[fn] === "function") {
-      window[fn](msg.data.args);
+      window[fn](msg.data?.args ?? undefined);
     } else {
       console.warn("No such function:", fn);
     }

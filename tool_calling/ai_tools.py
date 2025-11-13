@@ -20,7 +20,7 @@ def get_tools():
     
     post_tool =  {
             "type": "function",
-            "name": "post_question",
+            "name": "send_question",
             "description": "Trycker på en knapp som skickar en fråga från användaren till en ai chatbot"
         }
     

@@ -21,22 +21,18 @@ client = OpenAI(api_key= os.getenv("OPENAI_API_KEY"))
 async def write_question(question):
     await send_event("runFunction", {"name": "write_question", "args": question})
 
-def post_question():
-    print(f"post question")
+async def send_question():
+     await send_event("runFunction", {"name": "send_question"})
 
-def change_backend(backend):
-    print(f"change backend")
-
-
+async def change_backend(backend):
+    await send_event("runFunction", {"name": "change_backend", "args": backend})
 
 
-# Create a running input list we will add to over time
 def query_ai(prompt):
     print("prompting ai with: " + prompt)
     input_list = [{"role": "user", "content": prompt}]
     tools = get_tools()
 
-    # 2. Prompt the model with tools defined
     response = client.responses.create(
         model=MODEL,
         tools=tools,
@@ -48,11 +44,16 @@ def query_ai(prompt):
             print("AI is using function:", item.name, "with arguments", item.arguments)
 
             args = json.loads(item.arguments)
-            print("args:", args)  # safe printing
+            print("args:", args) 
 
             if item.name == "write_question":
                 question_text = args.get("question")
                 run_async(write_question(question_text))
+            elif item.name == "send_question":
+                run_async(send_question())
+            elif item.name == "change_backend":
+                backend = args.get("backend")
+                run_async(change_backend(backend))
 
    # print("Tool Calling response:")
    # print(response.model_dump_json(indent=2))
