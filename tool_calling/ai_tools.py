@@ -33,7 +33,7 @@ def get_tools():
                 "properties": {
                     "backend": {
                         "type": "string",
-                        "description": "Vilken backend som ska väljas, måste vara RAG eller Live",
+                        "description": "Vilken backend som ska väljas, måste vara 'RAG' eller 'Live Scraping'",
                     },
                 },
                 "required": ["backend"],

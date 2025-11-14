@@ -12,4 +12,4 @@ if __name__ == "__main__":
 
     print("Starting API server. Press Ctrl+C to stop.")
     # Run Uvicorn in the main thread (not daemon) so it handles Ctrl+C properly
-    uvicorn.run("api_websockets.main:app", host="127.0.0.1", port=8000, reload=False)
+    uvicorn.run("api_websockets.main:app", host="127.0.0.1", port=8001, reload=False)

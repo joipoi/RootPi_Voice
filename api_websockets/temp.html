@@ -4,7 +4,7 @@
     <h2>WebSocket Test</h2>
     <button id="myButton">Record</button>
     <script>
-      const ws = new WebSocket("ws://localhost:8000/ws");
+      const ws = new WebSocket("ws://localhost:8001/ws");
       const myButton = document.getElementById("myButton");
       myButton.addEventListener("click", () => {
         start_recording();
