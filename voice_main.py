@@ -27,7 +27,7 @@ VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start re
 # The amount of ms as voice needed to trigger recording =  VALIDATION_FRAMES * FRAME_DURATION_MS, currently 15*30=450ms
 
 OUTPUT_DIR = "recordings"
-TRANSCRIBE_METHOD = "local" # local or API
+TRANSCRIBE_METHOD = "API" # local or API
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
