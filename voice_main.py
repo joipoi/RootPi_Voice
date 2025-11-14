@@ -30,11 +30,12 @@ OUTPUT_DIR = "recordings"
 TRANSCRIBE_METHOD = "local" # local or API
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
 
 def start_recording_loop():
    
     vad = webrtcvad.Vad(VAD_AGGRESSIVENESS)
-    recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
+    
     recorder.start_stream()
     print("Listening for speech... Press Ctrl+C to stop.")
 
@@ -90,7 +91,8 @@ def start_recording_loop():
                         else:
                             transcribed_text = transcribe_audio_api(filename)
 
-                        query_ai(transcribed_text)
+                        if transcribed_text:
+                            query_ai(transcribed_text)
 
                         end_time = time.time()  # End timer
                         elapsed = end_time - start_time
@@ -105,6 +107,9 @@ def start_recording_loop():
     finally:
         recorder.stop_stream()
 
+def stop_recording():
+    recorder.stop_stream()
+    print("Stopping recording")
 
 if __name__ == "__main__":
     start_recording_loop()

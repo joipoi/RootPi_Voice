@@ -2,7 +2,7 @@
 from fastapi import FastAPI, WebSocket
 import threading
 
-from voice_main import start_recording_loop
+from voice_main import start_recording_loop, stop_recording
 from event_loop_runner import register_client
 
 app = FastAPI()
@@ -20,6 +20,8 @@ async def websocket_endpoint(ws: WebSocket):
             print("Received:", data)
             if data == "start_recording":
                 threading.Thread(target=start_recording_loop, daemon=True).start()
+            elif data == "stop_recording":
+                stop_recording()
             
     except Exception:
         print("Client disconnected")
