@@ -1,5 +1,5 @@
 # Description
-The flow of the program goes like this:
+The flow of the program goes like this(not counting api):
 
 - The program starts listening for audio(using sounddevice)
 - When it recognizes a voice it starts recording and when the voice stops it stops recording.(using [webrtcvad](https://github.com/wiseman/py-webrtcvad))
@@ -7,7 +7,7 @@ The flow of the program goes like this:
 - The wav fle is converted to text with OpenAI Whisper.
 - The text is sent to an AI(openai) that uses tool/function calling to run some code based on the text
 
-The main program can be run from voice_main.py, however there is also an api with websockets that you can run via init., in that case the recording starts when a websocket event is recieved
+The main program can be run from voice_main.py, however there is also an api with websockets that you can run via init.py, in that case the recording starts when a websocket event is recieved
 
 # Setup
 Setup a python envrioment and install dependencies from requirements.txt with these commands
@@ -22,18 +22,18 @@ When I installed webrtcvad I got some error about Visual Studio and C++. To solv
 You also need a .env file where you insert an OpenAI key, this is needed for tool calling and transcription if you are not running it locally
 
 # Usage
-To run just the recording loop type
+To run with the api and websockets:
+```
+python init.py
+```
+Then the recording starts when we get an event from the frontend and we send events to the frontend based on what the user said
+
+
+to run without api just the main recording loop(does not work right now)
 ```
 python voice_main.py
 ```
 then start speaking into your microphone and you will see wav files in the "recordings" folder and see transcriptions in the console
-
-if you want to start the api which lets the frontend start the recording loop later type
-
-```
-python init.py
-```
-
 # Transcribing
 For the transcribing we are using openai whisper. 
 
