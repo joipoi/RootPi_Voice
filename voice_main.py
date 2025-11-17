@@ -28,6 +28,7 @@ VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start re
 
 OUTPUT_DIR = "recordings"
 TRANSCRIBE_METHOD = "API" # local or API
+USING_API = True
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 recorder = Recorder(sample_rate=SAMPLE_RATE, frame_duration_ms=FRAME_DURATION_MS)
@@ -62,7 +63,6 @@ def start_recording_loop():
                         # Start recording
                         state = STATE_RECORDING
                         recorder.start_recording()
-                        start_time = time.time()  # Start timer
                         # Add prebuffer to recording
                         for f in prebuffer:
                             recorder.buffer_frame(f)
@@ -82,6 +82,7 @@ def start_recording_loop():
                     consecutive_silence += 1
                     if consecutive_silence >= silence_frames:
                         # Stop recording
+                        start_time = time.time()  # Start timer
                         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                         filename = os.path.join(OUTPUT_DIR, f"recording_{timestamp}.wav")
                         recorder.save_recording(filename)
@@ -90,10 +91,11 @@ def start_recording_loop():
                             transcribed_text = transcribe_audio(filename)
                         else:
                             transcribed_text = transcribe_audio_api(filename)
-
-                        if transcribed_text:
+                        # don't query ai with empty text, don't query uneless we use api
+                        if transcribed_text and USING_API:
                             query_ai(transcribed_text)
 
+                        recorder.delete_recording(filename)
                         end_time = time.time()  # End timer
                         elapsed = end_time - start_time
                         state = STATE_IDLE
@@ -112,4 +114,5 @@ def stop_recording():
     print("Stopping recording")
 
 if __name__ == "__main__":
+    USING_API = False
     start_recording_loop()

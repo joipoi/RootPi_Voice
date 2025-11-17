@@ -11,13 +11,12 @@ def transcribe_audio_api(filename="test.wav"):
     client = OpenAI()
 
     print(f"🎧 Transcribing '{filename}'...")
-    audio_file= open(filename, "rb")
-
-    transcription = client.audio.transcriptions.create(
-    model=MODEL, 
-    file=audio_file,
-    language=LANGUAGE
-)
+    with open(filename, "rb") as audio_file:
+        transcription = client.audio.transcriptions.create(
+            model=MODEL,
+            file=audio_file,
+            language=LANGUAGE
+        )
 
     end_time = time.time()  # End timer
     elapsed = end_time - start_time
@@ -29,4 +28,4 @@ def transcribe_audio_api(filename="test.wav"):
     return transcription.text
 
 if __name__ == "__main__":
-    transcribe_audio()
+    transcribe_audio_api()

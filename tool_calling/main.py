@@ -37,6 +37,7 @@ def query_ai(prompt):
         model=MODEL,
         tools=tools,
         input=input_list,
+        instructions="Du ska köra funktioner baserat på vad användaren säger. Texten kommer från 'voice-to-text' så vissa ord kan vara fel. Använd alltid exakt en funktion. Om du bara hör en fråga är det nog write_question funktionen"
     )
 
     for item in response.output:
@@ -54,18 +55,3 @@ def query_ai(prompt):
             elif item.name == "change_backend":
                 backend = args.get("backend")
                 run_async(change_backend(backend))
-
-   # print("Tool Calling response:")
-   # print(response.model_dump_json(indent=2))
-
-#response = client.responses.create(
-#    model=MODEL,
-#    instructions="Use the tools when the user wants to do something, requests could be in swedish or english",
-#    tools=tools,
-#    input=input_list,
-#)
-#print("Response for user:")
-#print(response.model_dump_json(indent=2))
-#print("\n" + response.output_text)
- 
-

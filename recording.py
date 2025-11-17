@@ -6,6 +6,7 @@ import threading
 import time
 import wave
 from collections import deque
+import os
 
 class Frame:
     """Represents a single audio frame."""
@@ -86,3 +87,16 @@ class Recorder:
             wf.writeframes(audio_bytes)
         print(f"Saved recording: {filename}")
         self.recording_buffer = []
+
+    def delete_recording(self, filepath):
+        """Delete a WAV file after transcription if it exists."""
+        try:
+            if os.path.exists(filepath):
+                time.sleep(1)
+                os.remove(filepath)
+                print(f"🗑️ Deleted recording file: {filepath}")
+            else:
+                print(f"⚠️ File not found, cannot delete: {filepath}")
+        except Exception as e:
+            print(f"❌ Error deleting file '{filepath}': {e}")
+
