@@ -102,7 +102,6 @@ def start_recording_loop():
                         consecutive_silence = 0
                         consecutive_voiced = 0
                         print(f"\n⏱️ Full time: {elapsed:.2f} seconds")
-                        print("Waiting for next speech segment...")
 
     except KeyboardInterrupt:
         print("\nExiting...")

@@ -16,13 +16,6 @@ VALIDATION_FRAMES = 15 # require this many consecutive voiced frames to start re
 # Problems
 Currently the program is good at telling the difference between silence and sound. It is also good at knowing when the sound stops and to stop the recording. However it can not tell the difference between voice and for example keyboard clicking. We can get it to ignore some background sound but if it is loud enough it will start the recording which seems bad. 
 
-# Debug
-For debugging run
-
-```
-python debug_run.py
-```
-
 # Audio file conversion
 (This is only relevent for debugging, not for our main program)
 
